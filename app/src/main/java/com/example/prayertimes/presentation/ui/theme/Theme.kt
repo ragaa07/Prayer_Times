@@ -1,4 +1,4 @@
-package com.example.prayertimes.ui.theme
+package com.example.prayertimes.presentation.ui.theme
 
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material.MaterialTheme

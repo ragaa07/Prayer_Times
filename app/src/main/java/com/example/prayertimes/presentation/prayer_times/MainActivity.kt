@@ -1,4 +1,4 @@
-package com.example.prayertimes
+package com.example.prayertimes.presentation.prayer_times
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -8,7 +8,7 @@ import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.tooling.preview.Preview
-import com.example.prayertimes.ui.theme.PrayerTimesTheme
+import com.example.prayertimes.presentation.ui.theme.PrayerTimesTheme
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
