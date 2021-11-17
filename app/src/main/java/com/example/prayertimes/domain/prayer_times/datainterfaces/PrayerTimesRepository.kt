@@ -5,5 +5,5 @@ import kotlinx.coroutines.flow.Flow
 
 interface PrayerTimesRepository {
 
-    suspend fun getPrayerTimes(long: String,lat:String,date:String):Flow<PrayerTimesModel>
+    suspend fun getPrayerTimes(long: String,lat:String,date:String):PrayerTimesModel
 }
