@@ -30,12 +30,14 @@ import java.util.*
 fun PrayerTimesScreen(
     viewModel: PrayerTimesViewModel,
     calenderStartDate: Calendar,
-    calenderEndDate: Calendar
+    calenderEndDate: Calendar,
+    lat: String?,
+    long: String?
 ) {
     val state = viewModel.prayerTimesState.value
     Card(backgroundColor = Color(Blue900.toArgb())) {
         Column(modifier = Modifier.fillMaxSize()) {
-            CustomCalender(viewModel = viewModel, calenderStartDate, calenderEndDate)
+            CustomCalender(viewModel = viewModel, calenderStartDate, calenderEndDate, lat, long)
             Card(shape = RoundedCornerShape(25.dp)) {
                 LoadingIndicator(isLoading = state.loading)
                 PrayerTimesSection(times = state.times)
@@ -46,7 +48,13 @@ fun PrayerTimesScreen(
 }
 
 @Composable
-fun CustomCalender(viewModel: PrayerTimesViewModel, startDate: Calendar, endDate: Calendar) {
+fun CustomCalender(
+    viewModel: PrayerTimesViewModel,
+    startDate: Calendar,
+    endDate: Calendar,
+    lat: String?,
+    long: String?
+) {
     AndroidView(factory = {
         val view = LayoutInflater.from(it)
             .inflate(R.layout.horizontal_calender, null, false)
@@ -58,8 +66,8 @@ fun CustomCalender(viewModel: PrayerTimesViewModel, startDate: Calendar, endDate
                 .build()
         horizontalCalender.calendarListener = object : HorizontalCalendarListener() {
             override fun onDateSelected(date: Calendar?, position: Int) {
-                if (date != null) {
-                    viewModel.getPrayerTimes("31.233334", "30.033333", date.formatDate())
+                if (date != null && lat != null && long != null) {
+                    viewModel.getPrayerTimes(long, lat, date.formatDate())
                 }
             }
         }
@@ -174,6 +182,11 @@ fun PrayerTimesSection(times: PrayerTimesModel?) {
 @Composable
 fun ErrorMessages(message: String?) {
     if (message != null) {
-            Text(text = message, modifier = Modifier.fillMaxSize(), color = Blue900,textAlign = TextAlign.Center)
-        }
+        Text(
+            text = message,
+            modifier = Modifier.fillMaxSize(),
+            color = Blue900,
+            textAlign = TextAlign.Center
+        )
+    }
 }

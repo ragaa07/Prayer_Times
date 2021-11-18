@@ -5,5 +5,7 @@
     <string name="asr">Asr</string>
     <string name="maghrib">Maghrib</string>
     <string name="isha">Isha</string>
+    <string name="gps_is_of_message">Please open the Gps and try again</string>
+    <string name="try_again_button_text"> Try again</string>
 
 </resources>
