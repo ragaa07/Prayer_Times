@@ -31,8 +31,8 @@ fun PrayerTimesScreen(
     viewModel: PrayerTimesViewModel,
     calenderStartDate: Calendar,
     calenderEndDate: Calendar,
-    lat: String?,
-    long: String?
+    lat: String,
+    long: String
 ) {
     val state = viewModel.prayerTimesState.value
     Card(backgroundColor = Color(Blue900.toArgb())) {
@@ -52,8 +52,8 @@ fun CustomCalender(
     viewModel: PrayerTimesViewModel,
     startDate: Calendar,
     endDate: Calendar,
-    lat: String?,
-    long: String?
+    lat: String,
+    long: String
 ) {
     AndroidView(factory = {
         val view = LayoutInflater.from(it)
@@ -66,7 +66,7 @@ fun CustomCalender(
                 .build()
         horizontalCalender.calendarListener = object : HorizontalCalendarListener() {
             override fun onDateSelected(date: Calendar?, position: Int) {
-                if (date != null && lat != null && long != null) {
+                if (date != null ) {
                     viewModel.getPrayerTimes(long, lat, date.formatDate())
                 }
             }

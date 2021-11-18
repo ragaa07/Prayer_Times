@@ -103,13 +103,17 @@ class MainActivity : ComponentActivity() {
                         }
 
                     } else {
-                        PrayerTimesScreen(
-                            viewModel = viewModel,
-                            calenderStartDate = startDate,
-                            calenderEndDate = endDate,
-                            lat = lat,
-                            long = long
-                        )
+                        lat?.let {
+                            long?.let { it1 ->
+                                PrayerTimesScreen(
+                                    viewModel = viewModel,
+                                    calenderStartDate = startDate,
+                                    calenderEndDate = endDate,
+                                    lat = it,
+                                    long = it1
+                                )
+                            }
+                        }
                     }
                 }
             }
