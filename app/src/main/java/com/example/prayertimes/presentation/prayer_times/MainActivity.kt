@@ -1,10 +1,12 @@
 package com.example.prayertimes.presentation.prayer_times
 
 import android.Manifest
+import android.annotation.SuppressLint
 import android.content.pm.PackageManager
 import android.location.Location
 import android.os.Build
 import android.os.Bundle
+import android.os.Looper
 import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -24,6 +26,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalLifecycleOwner
+import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
@@ -34,9 +37,9 @@ import com.example.prayertimes.presentation.util.Constant.REQUEST_CODE_LOCATION_
 import com.example.prayertimes.presentation.util.changeStatusBarColor
 import com.example.prayertimes.presentation.util.formatDate
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
+import com.google.accompanist.permissions.rememberMultiplePermissionsState
 import com.google.accompanist.permissions.rememberPermissionState
-import com.google.android.gms.location.FusedLocationProviderClient
-import com.google.android.gms.location.LocationServices
+import com.google.android.gms.location.*
 import dagger.hilt.android.AndroidEntryPoint
 import java.util.*
 
@@ -45,6 +48,7 @@ class MainActivity : ComponentActivity() {
 
     private val viewModel: PrayerTimesViewModel by viewModels()
     private lateinit var fusedLocationProviderClient: FusedLocationProviderClient
+    private lateinit var locationCallback: LocationCallback
     private var lat: String? by mutableStateOf(null)
     private var long: String? by mutableStateOf(null)
     private var gpsIsOf by mutableStateOf(false)
@@ -54,24 +58,25 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         changeStatusBarColor(Blue900.toArgb())
         fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this)
+        initLocationCallBack()
         val startDate = Calendar.getInstance()
         startDate.add(Calendar.MONTH, -1)
         val endDate = Calendar.getInstance()
         endDate.add(Calendar.MONTH, 1)
 
         setContent {
-            val permission = rememberPermissionState(
-                permission =
-                Manifest.permission.ACCESS_FINE_LOCATION
-            )
+            val permission = rememberMultiplePermissionsState(permissions = listOf(
+                Manifest.permission.ACCESS_FINE_LOCATION,
+                Manifest.permission.ACCESS_COARSE_LOCATION
+            ) )
 
             val lifecycleOwner = LocalLifecycleOwner.current
             DisposableEffect(
                 key1 = lifecycleOwner,
                 effect = {
                     val observer = LifecycleEventObserver { _, event ->
-                        if (event == Lifecycle.Event.ON_START && !permission.hasPermission) {
-                            permission.launchPermissionRequest()
+                        if (event == Lifecycle.Event.ON_START ) {
+                            permission.launchMultiplePermissionRequest()
                         }
                     }
                     lifecycleOwner.lifecycle.addObserver(observer)
@@ -81,7 +86,8 @@ class MainActivity : ComponentActivity() {
                     }
                 }
             )
-            if (permission.hasPermission) {
+            if (permission.allPermissionsGranted){
+                startLocationUpdates()
                 getLocation()
             }
 
@@ -160,6 +166,23 @@ class MainActivity : ComponentActivity() {
         }
     }
 
+    @SuppressLint("MissingPermission")
+    private fun startLocationUpdates(){
+        fusedLocationProviderClient.requestLocationUpdates(
+            LocationRequest(),
+            locationCallback,
+            Looper.getMainLooper())
+    }
+
+    private fun initLocationCallBack(){
+        locationCallback = object : LocationCallback() {
+            override fun onLocationResult(locationResult: LocationResult?) {
+                locationResult ?: return
+                for (location in locationResult.locations){
+                }
+            }
+        }
+    }
 }
 
 
