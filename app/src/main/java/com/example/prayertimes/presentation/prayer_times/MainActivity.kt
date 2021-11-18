@@ -4,41 +4,41 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
-import androidx.compose.foundation.layout.Row
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
-import androidx.compose.material.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.graphics.toArgb
+import com.example.prayertimes.presentation.ui.theme.Blue900
 import com.example.prayertimes.presentation.ui.theme.PrayerTimesTheme
+import com.example.prayertimes.presentation.util.changeStatusBarColor
+import com.example.prayertimes.presentation.util.formatDate
 import dagger.hilt.android.AndroidEntryPoint
+import java.util.*
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
     private val viewModel: PrayerTimesViewModel by viewModels()
+    private var lat: String? = null
+    private var long: String? = null
     override fun onCreate(savedInstanceState: Bundle?) {
+        changeStatusBarColor(Blue900.toArgb())
+        /* starts before 1 month from now */
+        val startDate = Calendar.getInstance()
+        startDate.add(Calendar.MONTH, -1)
+        /* ends after 1 month from now */
+        val endDate = Calendar.getInstance()
+        endDate.add(Calendar.MONTH, 1)
+
         super.onCreate(savedInstanceState)
-        viewModel.getPrayerTimes("31.233334", "30.033333", "2021-11-18")
+        viewModel.getPrayerTimes("31.233334", "30.033333", Calendar.getInstance().formatDate())
         setContent {
             PrayerTimesTheme {
                 // A surface container using the 'background' color from the theme
                 Surface(color = MaterialTheme.colors.background) {
-                    Greeting(viewModel)
+                    PrayerTimesScreen(viewModel = viewModel, startDate, endDate)
                 }
             }
         }
     }
 }
 
-@Composable
-fun Greeting(viewModel: PrayerTimesViewModel) {
-    val state = viewModel.prayerTimesState.value
-    if (state.times!=null) {
-        Row() {
-            Text(text = state.times.fajr)
-            Text(text = state.times.dhuhr)
-            Text(text = state.times.asr)
-        }
-    }
-}
 
