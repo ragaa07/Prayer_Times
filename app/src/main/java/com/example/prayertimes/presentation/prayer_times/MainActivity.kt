@@ -26,20 +26,19 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalLifecycleOwner
-import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
 import com.example.prayertimes.R
 import com.example.prayertimes.presentation.ui.theme.Blue900
 import com.example.prayertimes.presentation.ui.theme.PrayerTimesTheme
-import com.example.prayertimes.presentation.util.Constant.REQUEST_CODE_LOCATION_PERMISSION
+import com.example.prayertimes.presentation.util.Constant.LOCATION_UPDATE_INTERVAL
 import com.example.prayertimes.presentation.util.changeStatusBarColor
 import com.example.prayertimes.presentation.util.formatDate
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.rememberMultiplePermissionsState
-import com.google.accompanist.permissions.rememberPermissionState
 import com.google.android.gms.location.*
+import com.google.android.gms.location.LocationRequest.PRIORITY_HIGH_ACCURACY
 import dagger.hilt.android.AndroidEntryPoint
 import java.util.*
 
@@ -65,17 +64,19 @@ class MainActivity : ComponentActivity() {
         endDate.add(Calendar.MONTH, 1)
 
         setContent {
-            val permission = rememberMultiplePermissionsState(permissions = listOf(
-                Manifest.permission.ACCESS_FINE_LOCATION,
-                Manifest.permission.ACCESS_COARSE_LOCATION
-            ) )
+            val permission = rememberMultiplePermissionsState(
+                permissions = listOf(
+                    Manifest.permission.ACCESS_FINE_LOCATION,
+                    Manifest.permission.ACCESS_COARSE_LOCATION
+                )
+            )
 
             val lifecycleOwner = LocalLifecycleOwner.current
             DisposableEffect(
                 key1 = lifecycleOwner,
                 effect = {
                     val observer = LifecycleEventObserver { _, event ->
-                        if (event == Lifecycle.Event.ON_START ) {
+                        if (event == Lifecycle.Event.ON_START) {
                             permission.launchMultiplePermissionRequest()
                         }
                     }
@@ -86,7 +87,7 @@ class MainActivity : ComponentActivity() {
                     }
                 }
             )
-            if (permission.allPermissionsGranted){
+            if (permission.allPermissionsGranted) {
                 startLocationUpdates()
                 getLocation()
             }
@@ -167,18 +168,26 @@ class MainActivity : ComponentActivity() {
     }
 
     @SuppressLint("MissingPermission")
-    private fun startLocationUpdates(){
+    private fun startLocationUpdates() {
+        val locationRequest = LocationRequest().apply {
+            interval = LOCATION_UPDATE_INTERVAL
+            priority = PRIORITY_HIGH_ACCURACY
+        }
         fusedLocationProviderClient.requestLocationUpdates(
-            LocationRequest(),
+            locationRequest,
             locationCallback,
-            Looper.getMainLooper())
+            Looper.getMainLooper()
+        )
     }
 
-    private fun initLocationCallBack(){
+    private fun initLocationCallBack() {
         locationCallback = object : LocationCallback() {
             override fun onLocationResult(locationResult: LocationResult?) {
                 locationResult ?: return
-                for (location in locationResult.locations){
+                for (location in locationResult.locations) {
+                    if (location != null) {
+                        fusedLocationProviderClient.removeLocationUpdates(locationCallback)
+                    }
                 }
             }
         }
