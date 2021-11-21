@@ -3,11 +3,11 @@ buildscript {
     ext {
         compose_version = '1.0.5'
         kotlin_version = '1.5.31'
-        hilt_version='2.40'
+        hilt_version= '2.40.1'
         retrofit_version='2.9.0'
         gson_converter_version='2.9.0'
-        logging_interceptor='4.5.0'
-        coroutines_version='1.5.1'
+        logging_interceptor= '5.0.0-alpha.2'
+        coroutines_version= '1.5.2-native-mt'
     }
     repositories {
         google()

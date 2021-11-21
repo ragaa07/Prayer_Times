@@ -1,16 +1,12 @@
 package com.example.prayertimes.di
 
-import android.content.Context
 import com.example.prayertimes.data.prayer_times.datasource.remote.PrayerTimesApiService
 import com.example.prayertimes.data.prayer_times.repository.PrayerTimesRepositoryImpl
 import com.example.prayertimes.data.prayer_times.util.Constants
 import com.example.prayertimes.domain.prayer_times.datainterfaces.PrayerTimesRepository
-import com.google.android.gms.location.FusedLocationProviderClient
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
-import dagger.hilt.android.qualifiers.ApplicationContext
-import dagger.hilt.android.scopes.ActivityScoped
 import dagger.hilt.components.SingletonComponent
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
