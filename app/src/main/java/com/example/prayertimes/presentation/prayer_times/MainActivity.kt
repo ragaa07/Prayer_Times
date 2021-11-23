@@ -145,8 +145,8 @@ class MainActivity : ComponentActivity() {
                     if (location != null) {
                         gpsIsOf = false
                         // the api doesn't support damita coordinates, so this is a temporarily solution.
-                        long = location.longitude.toString().split(".")[0]
-                        lat = location.latitude.toString().split(".")[0]
+                        long = location.longitude.toString()
+                        lat = location.latitude.toString()
                         getPrayerTimes()
                     } else {
                         gpsIsOf = true
